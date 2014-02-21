@@ -1,7 +1,7 @@
 // Pulled from http://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html
 //
 // Go helper functions for data/config/cache directory and file lookup
-package xdgconfig
+package xdgbasedir
 
 import (
 	"os"
