@@ -20,7 +20,24 @@ func expectEquals(t *testing.T, expected string, given string, msg string) {
 	}
 }
 
+// clearEnvVars explicitly unsets all XDG environment variables, to ensure that
+// user environment does not affect tests
+func clearEnvVars() {
+	// explicitly unset, in case set in environment
+	os.Setenv("HOME", "")
+	os.Setenv("XDG_DATA_HOME", "")
+	os.Setenv("XDG_CONFIG_HOME", "")
+	os.Setenv("XDG_CACHE_HOME", "")
+	os.Setenv("XDG_CONFIG_DIRS", "")
+	os.Setenv("XDG_DATA_DIRS", "")
+	os.Setenv("XDG_RUNTIME_DIR", "")
+}
+
+// TestGetAll checks path resolution when no XDG_* env vars nor HOME are set
 func TestGetAll(t *testing.T) {
+	clearEnvVars()
+
+	// mock current user home directory location
 	userCurrent = func() (*user.User, error) {
 		return &user.User{HomeDir: "/home/Person"}, nil
 	}
@@ -45,7 +62,11 @@ func TestGetAll(t *testing.T) {
 	expectEquals(t, "/home/Person/.cache", cacheHome, "Unexpected cache")
 }
 
+// TestDirectories
 func TestDirectories(t *testing.T) {
+	clearEnvVars()
+
+	// mock current user home directory location
 	userCurrent = func() (*user.User, error) {
 		return &user.User{HomeDir: "/home/Person"}, nil
 	}
